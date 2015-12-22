@@ -74,8 +74,8 @@ function solmat = monochromaticsoln ( varargin )
 	if( length(CoefVector) > 7)
 		error('CoefVector too large!');
 	endif
-	% Relator is currently ignored.
-	if(  (Relator~='=') && (Relator~='<') && (Relator~='<=') )
+	% The relator to be used.
+    if(  (Relator~='=') && (Relator~='<') && (Relator~='<=') )
 		warning('Erroneous Relator defaulted to =.');
 		Relator='=';
 	endif
