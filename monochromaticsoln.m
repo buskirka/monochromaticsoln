@@ -1,7 +1,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{collist} = } monochromaticsoln (@var{col}, @var{eqn})
 ## @deftypefnx {Function File} {@var{collist} = } monochromaticsoln (@dots{}, 'Constant', @var{cons})
-## @deftypefnx {Function File} {@var{collist} = } monochromaticsoln (@dots{}, 'Relator', @var{rel})
+## @deftypefnx {Function File} {@var{collist} = } monochromaticsoln (@dots{}, 'Relation', @var{rel})
 ## @deftypefnx {Function File} {@var{collist} = } monochromaticsoln (@dots{}, 'verbose')
 ## Utilize a backtracking algorithm to obtain a list of the valid
 ## monochromatic solution avoiding colorings of maximal length for
@@ -10,7 +10,7 @@
 ## @nospell{@var{eqn}(1)*@var{x}(1) + @var{eqn}(2)*@var{x}(2) + @dots{} + @var{eqn}(end)*@var{x}(end) + @var{cons} = 0}
 ##
 ## @noindent
-## where '=' may be substituted for the relator specified by @var{rel}.
+## where '=' may be substituted for the relation specified by @var{rel}.
 ##
 ## The @var{col} input may be one of two types of input:
 ## @itemize
@@ -48,7 +48,7 @@
 ## @example
 ## monochromaticsoln(3, [1,1,1,-1], ...
 ##                   'Constant', 1, ...
-##                   'Relator', '<', ...
+##                   'Relation', '<', ...
 ##                   'verbose')
 ## @end itemize
 ##
@@ -59,25 +59,25 @@ function solmat = monochromaticsoln ( varargin )
 	p.addRequired('ColorNo',@isnumeric);
 	p.addRequired('CoefVector',@isnumeric);
 	p.addParamValue('Constant',0,@isnumeric);
-	validate_Relator = @(x) any(strcmp(x,{'=','<','<='}));
-	p.addParamValue('Relator','=',validate_Relator);
+	validate_Relation = @(x) any(strcmp(x,{'=','<','<='}));
+	p.addParamValue('Relation','=',validate_Relation);
 	p.addSwitch('verbose');
 	p.parse(varargin{:});
 
 	ColorNo=p.Results.ColorNo;
 	CoefVector=p.Results.CoefVector;
 	Constant=p.Results.Constant;
-	Relator=p.Results.Relator;
+	Relation=p.Results.Relation;
 	verbose=p.Results.verbose;
 
 	% Validity check
 	if( length(CoefVector) > 7)
 		error('CoefVector too large!');
 	endif
-	% The relator to be used.
-    if(  (Relator~='=') && (Relator~='<') && (Relator~='<=') )
-		warning('Erroneous Relator defaulted to =.');
-		Relator='=';
+	% The relation to be used.
+    if(  (Relation~='=') && (Relation~='<') && (Relation~='<=') )
+		warning('Erroneous Relation defaulted to =.');
+		Relation='=';
 	endif
 	% Print the equation to the user.
 	string=[num2str(CoefVector(1)),' x(1)'];
@@ -131,11 +131,11 @@ function solmat = monochromaticsoln ( varargin )
 			for i=2:length(CoefVector); 
 				s = s + CoefVector(i)*permute((1:l)',[i,2:(i-1),1,(i+1):length(CoefVector)]);
 			endfor
-			if(Relator=='=')
+			if(Relation=='=')
 				solnstruct=(s+Constant==0);
-			elseif(Relator=='<')
+			elseif(Relation=='<')
 				solnstruct=(s+Constant<0);
-			elseif(Relator=='<=')
+			elseif(Relation=='<=')
 				solnstruct=(s+Constant<=0);
 			endif
 		endif
